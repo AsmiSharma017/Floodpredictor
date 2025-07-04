@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Flood Detector | Himachal Pradesh</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;500;400&display=swap');
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', Arial, sans-serif;
+            background: #e0f7fa;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        /* Video background with parallax effect */
+        .video-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2;
+            object-fit: cover;
+            filter: brightness(0.55) blur(1.5px);
+        }
+        .navbar {
+            width: 100%;
+            background: rgba(25,118,210,0.94);
+            padding: 20px 0 16px 0;
+            display: flex;
+            justify-content: center;
+            gap: 36px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            letter-spacing: 1px;
+            position: relative;
+            transition: color 0.2s;
+        }
+        .navbar a:after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #ffd600;
+            transition: width .3s;
+            margin: 0 auto;
+        }
+        .navbar a:hover {
+            color: #ffd600;
+        }
+        .navbar a:hover:after {
+            width: 80%;
+        }
+        .hero-section {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            padding: 60px 6vw 40px 6vw;
+            position: relative;
+        }
+        .hero-left {
+            flex: 1 1 380px;
+            max-width: 480px;
+            background: rgba(255,255,255,0.93);
+            border-radius: 32px;
+            box-shadow: 0 8px 32px rgba(25, 118, 210, 0.09);
+            padding: 44px 36px 38px 36px;
+            margin: 20px 0;
+            animation: fadeInLeft 1.2s;
+        }
+        .hero-left h1 {
+            font-size: 2.5rem;
+            color: #1976d2;
+            margin-bottom: 18px;
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: 1px;
+        }
+        .hero-left p {
+            color: #333;
+            font-size: 1.13rem;
+            margin-bottom: 36px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            margin-top: 16px;
+        }
+        label {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1976d2;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .info-icon {
+            font-size: 1.1em;
+            color: #00bcd4;
+            cursor: help;
+        }
+        input[type="text"] {
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 2px solid #b2ebf2;
+            border-radius: 12px;
+            outline-offset: 2px;
+            background: #f7fafc;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            width: 100%;
+        }
+        input[type="text"]:focus {
+            border-color: #1976d2;
+            box-shadow: 0 0 8px #1976d2aa;
+            background: #fff;
+        }
+        button[type="submit"] {
+            background: linear-gradient(90deg, #1976d2, #00bcd4 80%);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.15rem;
+            padding: 14px 0;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: 12px;
+            letter-spacing: 1.1px;
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.13);
+        }
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, #00bcd4, #1976d2 80%);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .result {
+            margin-top: 30px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 15px 22px;
+            border-radius: 16px;
+            display: inline-block;
+            user-select: none;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            transition: background-color 0.3s;
+            animation: fadeInUp 1.2s;
+        }
+        .result.flood {
+            background-color: #f44336;
+            color: #fff;
+            box-shadow: 0 6px 20px #f44336aa;
+        }
+        .result.noflood {
+            background-color: #4caf50;
+            color: #fff;
+            box-shadow: 0 6px 20px #4caf50aa;
+        }
+        .hero-right {
+            flex: 1 1 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 220px;
+            max-width: 520px;
+            margin: 20px 0;
+            animation: fadeInRight 1.2s;
+        }
+        .hero-right img {
+            width: 100%;
+            max-width: 390px;
+            min-width: 180px;
+            animation: float 4s ease-in-out infinite;
+        }
+        /* Parallax blob background */
+        .blob-bg {
+            position: absolute;
+            top: 45%;
+            left: 60%;
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle at 60% 40%, #b2ebf2 60%, #1976d2 100%);
+            border-radius: 50% 60% 50% 70% / 60% 50% 70% 50%;
+            opacity: 0.23;
+            z-index: 0;
+            filter: blur(10px);
+            pointer-events: none;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-18px); }
+        }
+        @keyframes fadeInLeft {
+            0% { opacity: 0; transform: translateX(-60px);}
+            100% { opacity: 1; transform: translateX(0);}
+        }
+        @keyframes fadeInRight {
+            0% { opacity: 0; transform: translateX(60px);}
+            100% { opacity: 1; transform: translateX(0);}
+        }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(40px);}
+            100% { opacity: 1; transform: translateY(0);}
+        }
+        @media (max-width: 1100px) {
+            .hero-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 30px;
+                padding: 40px 2vw 30px 2vw;
+            }
+            .blob-bg {
+                left: 55%;
+                top: 54%;
+                width: 320px;
+                height: 320px;
+            }
+        }
+        @media (max-width: 700px) {
+            .hero-section {
+                padding: 20px 0 20px 0;
+            }
+            .hero-right img {
+                max-width: 180px;
+            }
+            .blob-bg {
+                display: none;
+            }
+        }
+    </style>
+    <script>
+        // Only allow numbers and dot in input
+        function validateInput(event) {
+            const allowed = /[0-9.]|\b/;
+            if (!allowed.test(event.key)) {
+                event.preventDefault();
+            }
+        }
+        // Tooltips for info icons
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('.info-icon').forEach(function(icon) {
+                icon.addEventListener('mouseenter', function() {
+                    let tip = document.createElement('div');
+                    tip.className = 'tooltip-tip';
+                    tip.textContent = icon.getAttribute('data-tip');
+                    tip.style.position = 'absolute';
+                    tip.style.background = '#1976d2';
+                    tip.style.color = '#fff';
+                    tip.style.padding = '6px 14px';
+                    tip.style.borderRadius = '8px';
+                    tip.style.fontSize = '0.98em';
+                    tip.style.top = (icon.getBoundingClientRect().top + window.scrollY + 20) + 'px';
+                    tip.style.left = (icon.getBoundingClientRect().left - 10) + 'px';
+                    tip.style.zIndex = 1000;
+                    tip.style.boxShadow = '0 2px 8px #1976d277';
+                    tip.classList.add('info-tip');
+                    document.body.appendChild(tip);
+                    icon._tip = tip;
+                });
+                icon.addEventListener('mouseleave', function() {
+                    if (icon._tip) {
+                        document.body.removeChild(icon._tip);
+                        icon._tip = null;
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <video class="video-bg" autoplay muted loop playsinline>
+        <source src="/static/videos/flood_bg.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/about">About Us</a>
+        <a href="/predict">Flood Detector</a>
+        <a href="/precautions">Precautions</a>
+    </div>
+    <section class="hero-section">
+        <div class="hero-left">
+            <h1>Flood Detector</h1>
+            <p>
+                Enter recent rainfall data below to get an instant flood risk prediction for your area in Himachal Pradesh.<br>
+                <span style="color:#1976d2; font-weight:500;">Stay aware. Stay safe.</span>
+            </p>
+            <form method="post" action="/predict" novalidate>
+                <label>
+                    Total Rainfall (mm)
+                    <span class="info-icon" data-tip="Total rainfall over the entire period (in millimeters)">&#9432;</span>
+                </label>
+                <input type="text" name="total_rainfall" required onkeypress="validateInput(event)" placeholder="e.g. 120.5" />
+                
+                <label>
+                    Max Daily Rainfall (mm)
+                    <span class="info-icon" data-tip="Highest rainfall recorded in a single day (in mm)">&#9432;</span>
+                </label>
+                <input type="text" name="max_daily_rainfall" required onkeypress="validateInput(event)" placeholder="e.g. 45.2" />
+                
+                <label>
+                    Mean Daily Rainfall (mm)
+                    <span class="info-icon" data-tip="Average rainfall per day (in mm)">&#9432;</span>
+                </label>
+                <input type="text" name="mean_daily_rainfall" required onkeypress="validateInput(event)" placeholder="e.g. 30.8" />
+                
+                <label>
+                    Duration (days)
+                    <span class="info-icon" data-tip="Number of days over which the rainfall occurred">&#9432;</span>
+                </label>
+                <input type="text" name="duration" required onkeypress="validateInput(event)" placeholder="e.g. 4" />
+                
+                <button type="submit">Predict Flood</button>
+            </form>
+            {% if prediction is not none %}
+                <div class="result {% if prediction == 1 %}flood{% elif prediction == 0 %}noflood{% endif %}">
+                    Prediction: 
+                    {% if prediction == 1 %}
+                        Flood
+                    {% elif prediction == 0 %}
+                        No Flood
+                    {% else %}
+                        {{ prediction }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="hero-right">
+            <!-- Replace the SVG below with your own illustration or PNG -->
+            <img src="/static/images/flood-illustration.svg" alt="Flood Illustration" />
+        </div>
+        <div class="blob-bg"></div>
+    </section>
+</body>
+</html>

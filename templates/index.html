@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Floods in Himachal Pradesh</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+            background: #101820;
+        }
+        #bg-video {
+            position: fixed;
+            top: 0; left: 0;
+            min-width: 100vw;
+            min-height: 100vh;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -2;
+            filter: brightness(0.5) blur(2px);
+        }
+        .overlay {
+            position: relative;
+            min-height: 100vh;
+            z-index: 1;
+            background: linear-gradient(120deg, rgba(16,24,32,0.7) 60%, rgba(0,51,102,0.6) 100%);
+            backdrop-filter: blur(2px);
+        }
+        .navbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 0 10px 0;
+            background: rgba(20, 30, 45, 0.6);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        .navbar a {
+            color: #fff;
+            margin: 0 22px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            letter-spacing: 1px;
+            position: relative;
+            transition: color 0.2s;
+        }
+        .navbar a:after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #00e6e6;
+            transition: width .3s;
+            margin: 0 auto;
+        }
+        .navbar a:hover {
+            color: #00e6e6;
+        }
+        .navbar a:hover:after {
+            width: 80%;
+        }
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+            padding-top: 60px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3.2em;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, #00e6e6, #0077ff 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.35em;
+            font-weight: 400;
+            max-width: 700px;
+            margin: 0 auto 32px auto;
+            line-height: 1.6;
+            color: #e0f7fa;
+            text-shadow: 0 2px 10px #0008;
+        }
+        .btn {
+            background: linear-gradient(90deg, #00e6e6, #0077ff 80%);
+            color: #fff;
+            padding: 18px 44px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 700;
+            box-shadow: 0 6px 24px rgba(0,230,230,0.12);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        .btn:hover {
+            background: linear-gradient(90deg, #0077ff, #00e6e6 80%);
+            transform: translateY(-2px) scale(1.04);
+        }
+        .glass-section {
+            margin: 60px auto 0 auto;
+            max-width: 1100px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            justify-content: space-between;
+        }
+        .glass-card {
+            flex: 1 1 320px;
+            min-width: 320px;
+            background: rgba(255,255,255,0.13);
+            border-radius: 18px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.13);
+            backdrop-filter: blur(7px);
+            padding: 36px 32px;
+            margin-bottom: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .glass-card:hover {
+            transform: translateY(-6px) scale(1.025);
+            box-shadow: 0 12px 40px rgba(0,230,230,0.18);
+        }
+        .glass-card h2 {
+            font-size: 1.5em;
+            margin-bottom: 14px;
+            color: #00e6e6;
+        }
+        .glass-card p, .glass-card ul {
+            color: #e0f7fa;
+            font-size: 1.08em;
+        }
+        .fact-counters {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 18px;
+        }
+        .counter {
+            font-size: 2.3em;
+            font-weight: 700;
+            color: #f3f3f3;
+        }
+        .fact-label {
+            font-size: 1em;
+            color: #fff;
+            margin-top: 4px;
+        }
+        .map-embed {
+            width: 100%;
+            border-radius: 12px;
+            border: none;
+            min-height: 260px;
+            margin-top: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+        }
+        .faq-section {
+            margin: 60px auto 0 auto;
+            max-width: 900px;
+            background: rgba(255,255,255,0.10);
+            border-radius: 16px;
+            padding: 36px 28px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+        }
+        .faq-title {
+            font-size: 2em;
+            color: #00e6e6;
+            margin-bottom: 18px;
+        }
+        .faq-item {
+            margin-bottom: 18px;
+        }
+        .faq-q {
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1.1em;
+            color: #f6f6f6;
+            margin-bottom: 6px;
+            transition: color 0.2s;
+        }
+        .faq-q:hover {
+            color: #00e6e6;
+        }
+        .faq-a {
+            display: none;
+            color: #fff;
+            font-size: 1em;
+            padding-left: 12px;
+            margin-bottom: 4px;
+        }
+        .resources {
+            margin: 48px auto 0 auto;
+            max-width: 900px;
+            text-align: center;
+        }
+        .resources a {
+            color: #00e6e6;
+            background: rgba(255,255,255,0.10);
+            padding: 10px 24px;
+            border-radius: 8px;
+            margin: 0 12px 12px 0;
+            display: inline-block;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .resources a:hover {
+            background: #00e6e6;
+            color: #101820;
+        }
+        @media (max-width: 1100px) {
+            .glass-section { flex-direction: column; gap: 0; }
+            .glass-card { margin-bottom: 32px; }
+        }
+        @media (max-width: 700px) {
+            .hero h1 { font-size: 2.1em; }
+            .glass-card { padding: 24px 12px; }
+            .faq-section { padding: 24px 8px; }
+        }
+    </style>
+    <script>
+        // Animated counters for facts
+        document.addEventListener("DOMContentLoaded", function() {
+            function animateValue(id, start, end, duration) {
+                let range = end - start;
+                let current = start;
+                let increment = end > start ? 1 : -1;
+                let stepTime = Math.abs(Math.floor(duration / range));
+                let obj = document.getElementById(id);
+                let timer = setInterval(function() {
+                    current += increment;
+                    obj.textContent = current.toLocaleString();
+                    if (current == end) {
+                        clearInterval(timer);
+                    }
+                }, stepTime);
+            }
+            animateValue("counter1", 0, 12, 1200);
+            animateValue("counter2", 0, 70000, 1500);
+            animateValue("counter3", 0, 9, 1100);
+        });
+
+        // FAQ accordion
+        function toggleFaq(idx) {
+            var answer = document.getElementById("faq-a-" + idx);
+            answer.style.display = answer.style.display === "block" ? "none" : "block";
+        }
+    </script>
+</head>
+<body>
+    <!-- Stylish Flood Video Background -->
+    <video autoplay muted loop id="bg-video" playsinline>
+        <source src="/static/videos/flood_bg.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="overlay">
+        <div class="navbar">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/predict">Flood Detector</a>
+            <a href="/precautions">Precautions</a>
+        </div>
+        <section class="hero">
+            <h1>Floods in Himachal Pradesh</h1>
+            <p>
+                Himachal Pradesh, known for its majestic mountains and rivers, faces severe flood threats every monsoon.<br>
+                Intense rainfall, cloudbursts, and rapid river swelling have caused landslides, loss of life, and destruction of property across the region.<br><br>
+                <b>Our AI-powered flood risk prediction website uses real weather data and machine learning to help you assess flood risk in your area of Himachal Pradesh.</b>
+            </p>
+            <a class="btn" href="/predict">Predict Flood in Your Area</a>
+        </section>
+
+        <!-- Modern Glassmorphism Cards Section -->
+        <div class="glass-section">
+            <div class="glass-card">
+                <h2>Himachal Flood Facts</h2>
+                <div class="fact-counters">
+                    <div>
+                        <div class="counter" id="counter1">0</div>
+                        <div class="fact-label">Major floods (past decade)</div>
+                    </div>
+                    <div>
+                        <div class="counter" id="counter2">0</div>
+                        <div class="fact-label">People affected in 2023</div>
+                    </div>
+                    <div>
+                        <div class="counter" id="counter3">0</div>
+                        <div class="fact-label">Districts at high risk</div>
+                    </div>
+                </div>
+                <p style="margin-top:18px; font-size:0.98em;">
+                    <i>Source: Govt. of Himachal Pradesh, NDMA, news reports</i>
+                </p>
+            </div>
+            <div class="glass-card">
+                <h2>Live Flood Map</h2>
+                <iframe class="map-embed"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3444255.895635098!2d76.0471228890625!3d31.8190766!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390578e4c3b6b6c3%3A0x3a8b1c5e2b6c0f1a!2sHimachal%20Pradesh!5e0!3m2!1sen!2sin!4v1689057700000!5m2!1sen!2sin"
+                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <p style="margin-top:10px;">Zoom and explore flood-prone regions of Himachal Pradesh.</p>
+            </div>
+            
+        </div>
+
+        <!-- FAQ Section with Modern Styling -->
+        <div class="faq-section">
+            <div class="faq-title">Frequently Asked Questions</div>
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(1)">What are the main causes of floods in Himachal Pradesh?</div>
+                <div class="faq-a" id="faq-a-1">
+                    Heavy monsoon rains, cloudbursts, rapid snowmelt, and landslides blocking rivers are the main causes of flooding in Himachal Pradesh.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(2)">How does this website predict floods?</div>
+                <div class="faq-a" id="faq-a-2">
+                    Our AI model analyzes rainfall, river data, and historical flood patterns to estimate flood risk for your area in real time.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(3)">Where can I get live flood alerts?</div>
+                <div class="faq-a" id="faq-a-3">
+                    You can get live alerts from the <a href="https://floods.imd.gov.in/" target="_blank" style="color:#00e6e6;">IMD Flood Warning Portal</a> and <a href="https://www.google.org/floodhub/" target="_blank" style="color:#00e6e6;">Google Flood Hub</a>.
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+</body>
+</html>
